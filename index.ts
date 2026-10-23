@@ -87,9 +87,11 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`MoviesBoxHD API server running on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`MoviesBoxHD API server running on port ${PORT}`);
+  });
+}
 
 export default app;
