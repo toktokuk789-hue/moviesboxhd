@@ -23,7 +23,7 @@ app.use(express.json());
 if (process.env.RATE_LIMIT === "true") {
   const limiter = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 60, // 60 requests per 5 minutes
+    max: 120, // 120 requests per 5 minutes
     message: {
       success: false,
       message: "Too many requests, please slow down and try again later.",
@@ -62,15 +62,20 @@ app.get("/health", (_req: Request, res: Response) => {
   });
 });
 
-// Root Information
+// Root Information & Interactive Docs
 app.get("/", (_req: Request, res: Response) => {
   res.json({
     name: "MoviesBoxHD API",
     status: "running",
-    version: "1.1.0",
+    version: "1.2.0",
     docs: {
-      mediaInfo: "GET /api/v1/mediaInfo?id={IMDb_ID}",
-      getSeasonList: "GET /api/v1/getSeasonList?id={IMDb_ID}",
+      search: "GET /api/v1/search?query={title}&type=multi|movie|tv&page=1",
+      trending: "GET /api/v1/trending?type=all|movie|tv&time=day|week",
+      popular: "GET /api/v1/popular?type=movie|tv&page=1",
+      details: "GET /api/v1/details?id={TMDB_ID}&type=movie|tv",
+      resolveId: "GET /api/v1/resolveId?id={TMDB_ID}&type=movie|tv",
+      mediaInfo: "GET /api/v1/mediaInfo?id={IMDb_ID_or_TMDB_ID}",
+      getSeasonList: "GET /api/v1/getSeasonList?id={IMDb_ID_or_TMDB_ID}",
       getStream: "POST /api/v1/getStream (Body: { file, key })",
     },
   });

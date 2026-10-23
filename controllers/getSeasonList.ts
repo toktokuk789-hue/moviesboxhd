@@ -1,21 +1,35 @@
 import { Request, Response } from "express";
 import getInfo from "../lib/getInfo";
+import { resolveImdbId } from "../lib/tmdb";
 
 export default async function getSeasonList(req: Request, res: Response) {
-  const { id } = req.query;
+  const { id, type } = req.query;
   if (!id || typeof id !== "string") {
     return res.status(400).json({
       success: false,
-      message: "Please provide a valid IMDb ID (e.g. ?id=tt11737520)",
+      message: "Please provide a valid IMDb or TMDB ID (e.g. ?id=tt11737520 or ?id=1396)",
     });
   }
 
   try {
-    const mediaInfo = await getInfo(id.trim());
+    let imdbId = id.trim();
+    if (!imdbId.startsWith("tt")) {
+      const resolved = await resolveImdbId(imdbId, (type as any) || "tv");
+      if (!resolved || !resolved.imdbId) {
+        return res.status(404).json({
+          success: false,
+          message: `Could not find an IMDb ID associated with TMDB ID ${imdbId}`,
+        });
+      }
+      imdbId = resolved.imdbId;
+    }
+
+    const mediaInfo = await getInfo(imdbId);
     if (!mediaInfo.success || !mediaInfo.data?.playlist) {
       return res.status(404).json({
         success: false,
         message: mediaInfo.message || "Media not found",
+        imdbId,
       });
     }
 
@@ -56,6 +70,7 @@ export default async function getSeasonList(req: Request, res: Response) {
       return res.json({
         success: true,
         data: {
+          imdbId,
           seasons,
           type: "tv",
         },
@@ -72,6 +87,7 @@ export default async function getSeasonList(req: Request, res: Response) {
       return res.json({
         success: true,
         data: {
+          imdbId,
           seasons: [
             {
               lang: languages,
