@@ -9,6 +9,7 @@ import {
   detailsController,
   resolveIdController,
 } from "../controllers/tmdb";
+import { playerApiController } from "../controllers/player";
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ const router = express.Router();
 router.get("/mediaInfo", mediaInfo);
 router.post("/getStream", getStream);
 router.get("/getSeasonList", getSeasonList);
+router.get("/player", playerApiController);
 
 // TMDB Discovery & Metadata routes
 router.get("/search", searchController);

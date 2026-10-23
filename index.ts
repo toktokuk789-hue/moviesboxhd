@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import rateLimit from "express-rate-limit";
 import router from "./routes/route";
+import { playerHtmlController } from "./controllers/player";
 
 dotenv.config();
 
@@ -53,6 +54,9 @@ const apiKeyAuth = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+// Embed Player Route (WordPress / Web embed)
+app.get("/player", playerHtmlController);
+
 // Health Check
 app.get("/health", (_req: Request, res: Response) => {
   res.json({
@@ -67,8 +71,10 @@ app.get("/", (_req: Request, res: Response) => {
   res.json({
     name: "MoviesBoxHD API",
     status: "running",
-    version: "1.2.0",
+    version: "1.3.0",
     docs: {
+      playerEmbed: "GET /player?id={IMDb_or_TMDB}&type=movie|tv&s=1&e=1 (Embeddable in WordPress iframe)",
+      playerApi: "GET /api/v1/player?id={IMDb_or_TMDB}&type=movie|tv&s=1&e=1",
       search: "GET /api/v1/search?query={title}&type=multi|movie|tv&page=1",
       trending: "GET /api/v1/trending?type=all|movie|tv&time=day|week",
       popular: "GET /api/v1/popular?type=movie|tv&page=1",
