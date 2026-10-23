@@ -117,9 +117,10 @@ export default async function getInfo(id: string): Promise<MediaInfoResult> {
     };
   } catch (error: any) {
     console.error("getInfo error:", error?.message || error);
+    const failedUrl = error?.config?.url || "unknown";
     return {
       success: false,
-      message: error?.message || "Internal server error fetching media info",
+      message: `${error?.message || "Internal server error"} (requested: ${failedUrl})`,
     };
   }
 }
