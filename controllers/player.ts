@@ -144,40 +144,23 @@ export async function playerHtmlController(req: Request, res: Response) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MoviesBoxHD Player</title>
+  <meta name="color-scheme" content="dark">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body, html { width: 100%; height: 100%; background: #000; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .player-container { display: flex; flex-direction: column; width: 100%; height: 100%; }
-    .server-bar {
-      display: flex;
-      gap: 8px;
-      padding: 8px 12px;
-      background: #0f1117;
-      border-bottom: 1px solid #1f2430;
-      overflow-x: auto;
-      white-space: nowrap;
-      scrollbar-width: thin;
-    }
-    .server-btn {
-      background: #1e2230;
-      color: #94a3b8;
-      border: 1px solid #334155;
-      padding: 6px 14px;
-      font-size: 13px;
-      font-weight: 500;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .server-btn:hover { background: #2d3748; color: #fff; }
-    .server-btn.active {
-      background: #3b82f6;
-      color: #fff;
-      border-color: #60a5fa;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
-    }
-    .iframe-wrapper { flex: 1; width: 100%; height: 100%; position: relative; }
-    iframe { width: 100%; height: 100%; border: none; }
+    :root { color-scheme: dark; --page: #0a0f14; --surface: #111821; --line: #223040; --text: #e6edf3; --muted: #93a3b4; --accent: #ff5b2e; }
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; min-height: 0; margin: 0; background: var(--page); color: var(--text); font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { overflow: hidden; }
+    .player-container { display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; background: var(--page); }
+    .server-bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--surface); border-bottom: 1px solid var(--line); overflow-x: auto; white-space: nowrap; scrollbar-width: thin; }
+    .server-btn { flex: 0 0 auto; appearance: none; background: #17212c; color: var(--muted); border: 1px solid #304052; padding: 9px 13px; min-height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; transition: background .16s ease, color .16s ease, border-color .16s ease; }
+    .server-btn:hover { background: #202d3a; color: var(--text); }
+    .server-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .server-btn.active, .server-btn[aria-pressed="true"] { background: var(--accent); color: #15100e; border-color: var(--accent); }
+    .player-note { padding: 8px 12px; color: var(--muted); background: #0d141c; border-bottom: 1px solid var(--line); font-size: 12px; line-height: 1.5; }
+    .iframe-wrapper { flex: 1 1 auto; min-height: 0; width: 100%; position: relative; background: #050709; }
+    iframe { display: block; width: 100%; height: 100%; min-height: 220px; border: 0; background: #050709; }
+    @media (max-width: 520px) { .server-bar { gap: 6px; padding: 8px; } .server-btn { padding: 8px 10px; font-size: 12px; } .player-note { padding: 8px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; } }
   </style>
 </head>
 <body>
@@ -193,7 +176,7 @@ export async function playerHtmlController(req: Request, res: Response) {
         .join("")}
     </div>
     <div class="iframe-wrapper">
-      <iframe id="videoPlayer" src="${primaryUrl}" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture"></iframe>
+      <iframe id="videoPlayer" title="Selected video provider" src="${primaryUrl}" loading="eager" allowfullscreen allow="autoplay; fullscreen; encrypted-media; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </div>
   </div>
 
